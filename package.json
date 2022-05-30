@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "pregenerate": "rm -rf gen",
+    "generate": "openapi-generator-cli generate -g typescript-axios -i ./openapi.yaml -o ./gen",
     "build": "webpack",
     "watch": "webpack -w"
   },
@@ -19,6 +21,7 @@
   },
   "homepage": "https://github.com/suzuxander/open-api-gateway-generator#readme",
   "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.5.1",
     "@types/aws-lambda": "^8.10.97",
     "aws-cdk": "^2.25.0",
     "aws-lambda": "^1.0.7",
