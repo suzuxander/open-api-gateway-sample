@@ -2,20 +2,50 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { CdkStack } from '../lib/cdk-stack';
+import * as jsYaml from 'js-yaml';
+import { readFileSync } from 'fs';
+import { Runtime } from 'aws-cdk-lib/aws-lambda';
+
+interface OpenApi {
+  paths: {
+    [path: string]: {
+      [method: string]: {
+        'x-amazon-apigateway-integration': {
+          uri: string
+        }
+      }
+    }
+  }
+}
 
 const app = new cdk.App();
-new CdkStack(app, 'CdkStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
+const stack = new CdkStack(app, 'open-api-gateway-generator', {
+  env: { region: 'ap-northeast-1' }
+});
+const api = stack.api('Api', {
+  name: 'open-api-gateway-generator-api',
+  stageName: 'dev',
+  definitionUri: '../../openapi.yaml',
+});
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+const role = stack.lambdaServiceRole('LambdaServiceRole', {
+  roleName: 'open-api-gateway-generator-api-service-role',
+});
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
+const openapi = jsYaml.load(readFileSync('../openapi.yaml').toString()) as OpenApi;
+Object.keys(openapi.paths).forEach(path => {
+  Object.keys(openapi.paths[path]).forEach(method => {
+    const { uri } = openapi.paths[path][method]['x-amazon-apigateway-integration'];
+    const functionName = (uri.split(':').pop() as string).split('/').shift() as string;
 
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+    stack.lambdaFunction((functionName).replace(/-/g, ''), {
+      functionName,
+      runtime: Runtime.NODEJS_16_X,
+      role: role.ref,
+      codeUri: '../../lambda',
+      handler: 'dist/index.js',
+      timeout: 30,
+      event: { api: { path, method, restApiId: api.ref } }
+    })
+  });
 });
