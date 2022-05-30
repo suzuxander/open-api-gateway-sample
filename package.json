@@ -1,0 +1,22 @@
+{
+  "name": "open-api-gateway-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suzuxander/open-api-gateway-generator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/suzuxander/open-api-gateway-generator/issues"
+  },
+  "homepage": "https://github.com/suzuxander/open-api-gateway-generator#readme",
+  "dependencies": {
+    "aws-cdk": "^2.25.0"
+  }
+}
