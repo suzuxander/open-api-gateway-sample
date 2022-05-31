@@ -6,6 +6,7 @@ module.exports = {
     'user/get/index': './lambda/user/get.ts',
     'user/post/index': './lambda/user/post.ts',
     'user/delete/index': './lambda/user/delete.ts',
+    'client/index': './lambda/client/index.ts',
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -30,7 +31,7 @@ module.exports = {
       'gen'
     ],
     alias: {
-      // gen: path.resolve(__dirname, './gen')
+      gen: path.resolve(__dirname, './gen'),
       lambda: path.resolve(__dirname, './lambda')
     },
   },
