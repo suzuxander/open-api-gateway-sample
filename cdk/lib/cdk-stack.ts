@@ -33,7 +33,7 @@ export class CdkStack extends Stack {
     layers?: string[],
     timeout?: number,
     memorySize?: number,
-    event?: { api?: { method: string, path: string, restApiId: string } }
+    event?: { api?: { method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, restApiId: string } }
   }) => {
     const {
       codeUri,
@@ -73,14 +73,33 @@ export class CdkStack extends Stack {
     })
   };
 
-  public lambdaServiceRole = (id: string, options: {
+  public serviceRole = (id: string, options: {
     roleName: string,
-    policyName?: string,
+    assumeRolePolicy: { service: string[] },
+    policy?: { name?: string, statement: { effect: 'Allow' | 'Deny', action: string[], resource: string[] }[] },
   }): CfnRole => {
     const {
       roleName,
-      policyName,
+      assumeRolePolicy,
+      policy,
     } = options;
+
+    let policies: any[] = [];
+    if (policy) {
+      policies = [{
+        policyName: policy.name ?? 'policy',
+        policyDocument: {
+          Statement: policy.statement.map(st => (
+            {
+              Action: st.action,
+              Effect: st.effect,
+              Resource: st.resource
+            }
+          )),
+          Version: '2012-10-17'
+        }
+      }];
+    }
 
     return new CfnRole(this, id, {
       roleName,
@@ -89,12 +108,12 @@ export class CdkStack extends Stack {
           Action: [ 'sts:AssumeRole' ],
           Effect: 'Allow',
           Principal: {
-            Service: [ 'lambda.amazonaws.com' ]
+            Service: assumeRolePolicy.service
           }
         }],
         Version: '2012-10-17'
       },
-
+      policies
     });
   };
 }
