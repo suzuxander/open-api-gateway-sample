@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  title: 'sample api'
+  version: 1.0.0
+paths:
+  /user:
+    post:
+      description: 'user/post/'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUserRequest'
+      responses:
+        '200':
+          description: 'OK'
+        '500':
+          description: 'Internal Server Error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+      x-amazon-apigateway-integration:
+        contentHandling: CONVERT_TO_TEXT
+        httpMethod: POST
+        passthroughBehavior: when_no_match
+        responses:
+          default:
+            statusCode: '200'
+        type: aws_proxy
+        uri: >-
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-generator-api-post-user/invocations
+  /user/{id}:
+    get:
+      description: 'user/get/'
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+        '500':
+           description: 'Internal Server Error'
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ServerError'
+      x-amazon-apigateway-integration:
+        contentHandling: CONVERT_TO_TEXT
+        httpMethod: POST
+        passthroughBehavior: when_no_match
+        responses:
+          default:
+            statusCode: '200'
+        type: aws_proxy
+        uri: >-
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-generator-api-get-user/invocations
+    delete:
+      description: 'user/delete/'
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'OK'
+        '500':
+           description: 'Internal Server Error'
+           content:
+             application/json:
+               schema:
+                 $ref: '#/components/schemas/ServerError'
+      x-amazon-apigateway-integration:
+        contentHandling: CONVERT_TO_TEXT
+        httpMethod: POST
+        passthroughBehavior: when_no_match
+        responses:
+          default:
+            statusCode: '200'
+        type: aws_proxy
+        uri: >-
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-generator-api-delete-user/invocations
+components:
+  schemas:
+    GetUserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    PostUserRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    ServerError:
+      type: object
+      properties:
+        status:
+          type: number
+        message:
+          type: string
