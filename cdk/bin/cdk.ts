@@ -32,7 +32,7 @@ const createOpenApiYaml = (input: string, output: string): OpenApi => {
   return jsYaml.load(yaml) as OpenApi;
 };
 
-const createCfnStack = (): void => {
+const createSimpleApiStack = (): void => {
   const openapiName = 'openapi-simple.yaml';
   const openapi = createOpenApiYaml('../openapi/simple/openapi.yaml', './cdk.out/' + openapiName);
 
@@ -84,5 +84,5 @@ const createCfnStack = (): void => {
   });
 };
 
-createCfnStack();
+createSimpleApiStack();
 

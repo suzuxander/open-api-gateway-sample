@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install": "sh script/install.sh",
+    "init": "sh script/install.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pregenerate": "rm -rf gen",
     "generate": "openapi-generator-cli generate -g typescript-axios -i ./openapi.yaml -o ./gen",

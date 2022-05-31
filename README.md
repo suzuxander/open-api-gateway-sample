@@ -9,7 +9,7 @@ OpenAPIからAPI Gateway、Lambda関数、APIクライアント、APIのレス�
 ## セットアップ
 必要なライブラリをインストールする。
 ```bash
-$ npm run install
+$ npm run init
 ```
 
 ## デプロイ
