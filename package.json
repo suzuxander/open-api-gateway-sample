@@ -8,7 +8,8 @@
     "pregenerate": "rm -rf gen",
     "generate": "openapi-generator-cli generate -g typescript-axios -i ./openapi.yaml -o ./gen",
     "build": "webpack",
-    "watch": "webpack -w"
+    "watch": "webpack -w",
+    "deploy": "sh deploy.sh"
   },
   "repository": {
     "type": "git",

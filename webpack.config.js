@@ -3,7 +3,9 @@ const path = require('path');
 module.exports = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
   entry: {
-    api: './lambda/index.ts',
+    'user/get/index': './lambda/user/get.ts',
+    'user/post/index': './lambda/user/post.ts',
+    'user/delete/index': './lambda/user/delete.ts',
   },
   output: {
     path: path.join(__dirname, 'dist'),
@@ -24,11 +26,12 @@ module.exports = {
     extensions: ['.ts', '.js', '.json'],
     modules: [
       'node_modules',
-      path.resolve(__dirname, 'app'),
-      path.resolve(__dirname, 'gen'),
+      'lambda',
+      'gen'
     ],
     alias: {
-      gen: path.resolve(__dirname, './gen')
+      // gen: path.resolve(__dirname, './gen')
+      lambda: path.resolve(__dirname, './lambda')
     },
   },
   target: 'node'
