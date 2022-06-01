@@ -7,7 +7,8 @@
     "init": "sh script/install.sh",
     "test": "echo \"Error: no test specified\" && exit 1",
     "pregenerate": "rm -rf gen",
-    "generate": "openapi-generator-cli generate -g typescript-axios -i ./openapi/simple/openapi.yaml -o ./gen",
+    "generate:simple": "openapi-generator-cli generate --generator-key simple",
+    "prebuild": "npm run generate:simple",
     "build": "webpack",
     "watch": "webpack -w",
     "deploy": "sh script/deploy.sh"

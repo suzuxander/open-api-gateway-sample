@@ -97,15 +97,19 @@ components:
       properties:
         id:
           type: string
+          nullable: false
         name:
           type: string
+          nullable: false
     PostUserRequest:
       type: object
       properties:
         id:
           type: string
+          nullable: false
         name:
           type: string
+          nullable: false
     ServerError:
       type: object
       properties:
