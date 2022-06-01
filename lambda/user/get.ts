@@ -1,5 +1,5 @@
 import { APIGatewayEvent, Callback } from 'aws-lambda';
-import { GetUserResponse } from 'gen';
+import { GetUserResponse } from 'gen/simple';
 import { lambdaHandler } from 'lambda/common';
 
 const main = (event: APIGatewayEvent): GetUserResponse => {

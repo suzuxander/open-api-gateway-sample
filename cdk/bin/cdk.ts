@@ -21,8 +21,10 @@ interface OpenApi {
 }
 
 const accountId = process.env.ACCOUNT_ID;
-const region = process.env.REGION ?? 'ap-northeast-1';
 if (!accountId) throw new Error('process.env.ACCOUNT_ID is required.');
+
+const region = process.env.REGION ?? 'ap-northeast-1';
+const apiType = process.env.API_TYPE ? 'API_KEY_SECURITY' : 'SIMPLE';
 
 const createOpenApiYaml = (input: string, output: string): OpenApi => {
   const yaml = readFileSync(input).toString()
@@ -33,8 +35,12 @@ const createOpenApiYaml = (input: string, output: string): OpenApi => {
 };
 
 const createSimpleApiStack = (): void => {
-  const openapiName = 'openapi-simple.yaml';
-  const openapi = createOpenApiYaml('../openapi/simple/openapi.yaml', './cdk.out/' + openapiName);
+  let inputOpenapiName = '../openapi/simple/openapi.yaml';
+  if (apiType === 'API_KEY_SECURITY') {
+    inputOpenapiName = '../openapi/apikey/openapi.yaml';
+  }
+  const outputOpenapiName = 'openapi.yaml';
+  const openapi = createOpenApiYaml(inputOpenapiName, './cdk.out/' + outputOpenapiName);
 
   const app = new cdk.App();
 
@@ -45,7 +51,7 @@ const createSimpleApiStack = (): void => {
   const api = stack.api('Api', {
     name: 'open-api-gateway-generator-api',
     stageName: 'dev',
-    definitionUri: './' + openapiName,
+    definitionUri: './' + outputOpenapiName,
   });
 
   const role = stack.serviceRole('LambdaServiceRole', {
@@ -82,6 +88,14 @@ const createSimpleApiStack = (): void => {
       })
     });
   });
+
+  if (apiType === 'API_KEY_SECURITY') {
+    stack.createApiKey('ApiKey', {
+      keyName: 'open-api-gateway-generator-api-key',
+      stageName: 'dev',
+      apiId: api.ref
+    });
+  }
 };
 
 createSimpleApiStack();

@@ -8,7 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "pregenerate": "rm -rf gen",
     "generate:simple": "openapi-generator-cli generate --generator-key simple",
-    "prebuild": "npm run generate:simple",
+    "generate:apikey": "openapi-generator-cli generate --generator-key apikey",
+    "generate": "npm run generate:simple && npm run generate:apikey",
+    "prebuild": "npm run generate",
     "build": "webpack",
     "watch": "webpack -w",
     "deploy": "sh script/deploy.sh"

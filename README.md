@@ -30,9 +30,18 @@ $ npm run deploy
 ### 動作確認
 コマンドラインからAPIを実行できる。以下のコマンドを実行して結果が表示されればOK。  
 このコマンドではopenapi generatorで自動生成されたAPIクライアントからAPIにリクエストを送信している。
+コードの詳細は[こちら](./lambda/client/get.ts)を参照。
 ```bash
-$ node dist/client/index.js
-{ id: '00000', name: 'suzuxander' }
+# APIのURIを環境変数に代入
+$ export BASE_PATH={BASE_PATH}
+
+$ node dist/client/get.js
+status: 200
+response: { id: '00000', name: 'suzuxander' }
+
+# post, deleteのAPIは以下で確認可能
+$ node dist/client/post.js
+$ node dist/client/delete.js
 ```
 ## コードの説明
 [openapi.yaml](/openapi/simple/openapi.yaml)で以下のようなAPIを定義している。
@@ -120,7 +129,7 @@ export class DefaultApi extends BaseAPI {
 
 }
 ```
-使用例は[こちら](./lambda/client/index.ts)を参照。
+使用例は[こちら](./lambda/client/get.ts)を参照。
 
 ### APIのエンドポイントを変更/追加する場合
 以下に記載するのは本プロジェクトでの設定なので必要に応じて修正する。
@@ -147,13 +156,65 @@ export class DefaultApi extends BaseAPI {
    ...省略
    
    module.exports = {
-     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
      entry: {
+       // for api
        'user/get/index': './lambda/user/get.ts',
        'user/post/index': './lambda/user/post.ts',
        'user/delete/index': './lambda/user/delete.ts',
-       'client/index': './lambda/client/index.ts',
+       // for api client
+       'client/get': './lambda/client/get.ts',
+       'client/post': './lambda/client/post.ts',
+       'client/delete': './lambda/client/delete.ts',
+       'client/apikey/get': './lambda/client/apikey/get.ts',
+       'client/apikey/post': './lambda/client/apikey/post.ts',
+       'client/apikey/delete': './lambda/client/apikey/delete.ts',
      },
    
    ...省略
    ```
+
+## APIキー認証ありのAPIの場合
+### デプロイ
+デプロイ時に`API_TYPE`に"API_KEY_SECURITY"を代入した上で以下コマンドを実行する。
+```bash
+$ export API_TYPE=API_KEY_SECURITY
+$ export ACCOUNT_ID={ACCOUNT_ID}
+$ export REGION={REGION}
+$ export ARTIFACT_BUCKET={ARTIFACT_BUCKET}
+
+# デプロイ実行
+$ npm run deploy
+```
+デプロイが正常終了したらAPIにAPIキー認証がかかっているはず。
+
+### 動作確認
+以下のコマンドを実行して結果が表示されればOK。  
+このコマンドではAPIキーをリクエストヘッダーに付与してAPIにリクエストを送信している。  
+コードの詳細は[こちら](./lambda/client/apikey/get.ts)を参照。
+```bash
+# 生成されたAPIキーを環境変数に代入
+$ export API_KEY={API_KEY}
+$ export BASE_PATH={BASE_PATH}
+
+$ node dist/client/apikey/get.js
+status: 200
+response: { id: '00000', name: 'suzuxander' }
+
+# post, deleteのAPIは以下で確認可能
+$ node dist/client/apikey/post.js
+$ node dist/client/apikey/delete.js
+```
+
+以下のようにAPIキーをリクエストヘッダーに付与していないクライアントの場合は403エラーが返ってくる。
+```bash
+$ node dist/client/get.js 
+webpack://open-api-gateway-generator/./node_modules/axios/lib/core/createError.js?:16
+  var error = new Error(message);
+              ^
+
+Error: Request failed with status code 403
+    at createError (webpack://open-api-gateway-generator/./node_modules/axios/lib/core/createError.js?:16:15)
+    at settle (webpack://open-api-gateway-generator/./node_modules/axios/lib/core/settle.js?:17:12)
+    at IncomingMessage.handleStreamEnd (webpack://open-api-gateway-generator/./node_modules/axios/lib/adapters/http.js?:322:11)
+...省略
+```

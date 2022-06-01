@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import { CfnApi, CfnFunction } from 'aws-cdk-lib/aws-sam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import { CfnRole } from 'aws-cdk-lib/aws-iam';
+import { CfnApiKey, CfnUsagePlan, CfnUsagePlanKey } from 'aws-cdk-lib/aws-apigateway';
 
 export class CdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -115,5 +116,44 @@ export class CdkStack extends Stack {
       },
       policies
     });
+  };
+
+  public createApiKey = (id: string, options: {
+    stageName: string,
+    apiId: string,
+    keyName: string,
+    keyValue?: string
+  }): CfnApiKey => {
+    const {
+      stageName,
+      apiId,
+      keyName,
+      keyValue
+    } = options;
+    const apiKey = new CfnApiKey(this, id, {
+      name: keyName,
+      value: keyValue,
+      // description,
+      enabled: true,
+      stageKeys: [{
+        restApiId: apiId,
+        stageName
+      }]
+    });
+    const usagePlan = new CfnUsagePlan(this, id + 'UsagePlan', {
+      usagePlanName: keyName + '-usage-plan',
+      apiStages: [{
+        apiId: apiId,
+        stage: stageName
+      }]
+
+    });
+    new CfnUsagePlanKey(this, id + 'UsagePlanKey', {
+      keyId: apiKey.ref,
+      keyType: 'API_KEY',
+      usagePlanId: usagePlan.ref
+    });
+
+    return apiKey;
   };
 }

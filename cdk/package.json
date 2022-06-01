@@ -8,6 +8,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "synth": "cdk synth",
+    "synth:apikey": "export API_TYPE=API_KEY_SECURITY && cdk synth",
     "test": "jest",
     "cdk": "cdk"
   },

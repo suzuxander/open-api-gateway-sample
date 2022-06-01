@@ -7,7 +7,12 @@
       "simple": {
         "generatorName": "typescript-axios",
         "inputSpec": "./openapi/simple/openapi.yaml",
-        "output": "./gen"
+        "output": "./gen/simple"
+      },
+      "apikey": {
+        "generatorName": "typescript-axios",
+        "inputSpec": "./openapi/apikey/openapi.yaml",
+        "output": "./gen/apikey"
       }
     }
   }
