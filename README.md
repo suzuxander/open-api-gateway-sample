@@ -14,8 +14,8 @@ APIクライアント(typescript/axios)、APIのレスポンス(typescript)の�
 $ npm run init
 ```
 
-## デプロイ
-デプロイを実行する。
+### デプロイ
+コマンドラインからデプロイを実行する。
 ```bash
 # リソースを生成するAWSアカウントを環境変数に設定する
 $ export ACCOUNT_ID={ACCOUNT_ID}
@@ -26,6 +26,12 @@ $ export ARTIFACT_BUCKET={ARTIFACT_BUCKET}
 
 # デプロイ実行
 $ npm run deploy
+
+..省略
+
+Waiting for changeset to be created..
+Waiting for stack create/update to complete
+Successfully created/updated stack - api-gateway-sample
 ```
 デプロイが正常終了したらAPI Gateway、Lambda関数などが生成されている。  
 生成されたリソースはマネジメントコンソールのCloudFormationの画面などで確認。
@@ -87,7 +93,6 @@ components:
 本プロジェクトでは`npm run generate`を実行することで`gen`ディレクトリ配下に自動生成されるように設定している。
 
 ### 生成されるレスポンスの型
-以下のようにインターフェースが生成される。
 ```typescript
 /**
  * 
@@ -109,10 +114,9 @@ export interface GetUserResponse {
     'name'?: string;
 }
 ```
-使用例は[こちら](./lambda/user/get.ts)を参照。
 
 ### 生成されるAPIクライアント
-```
+```typescript
 export class DefaultApi extends BaseAPI {
 
 ...省略
@@ -132,7 +136,22 @@ export class DefaultApi extends BaseAPI {
 
 }
 ```
-使用例は[こちら](./lambda/client/get.ts)を参照。
+
+以下のようにしてAPIクライントと型を使用してAPIにリクエストを送信する。  
+使用例は[こちら](./lambda/client/get.ts)などを参照。
+```typescript
+import { Configuration, DefaultApi } from 'gen/simple';
+
+const exec = async () => {
+  const api = new DefaultApi({
+    basePath: process.env.BASE_PATH as string
+  } as Configuration);
+
+  const res = await api.userIdGet('1');
+  console.log('status:', res.status);
+  console.log('response:', res.data);
+}
+```
 
 ### APIのエンドポイントを変更/追加する場合
 以下に記載するのは本プロジェクトでの設定なので必要に応じて修正する。

@@ -13,10 +13,12 @@ fi
 
 # build lambda function
 rm -rf dist
+npm i
 npm run build
 
 # create cloudformation template
 cd cdk
+npm i
 npm run build
 npm run synth
 cd ..
