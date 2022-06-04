@@ -1,10 +1,12 @@
-# open-api-gateway-generator
+# api-gateway-sample
 ## 概要
-OpenAPIからAPI Gateway、Lambda関数、APIクライアント、APIのレスポンスの型を生成するプロジェクトのサンプル。  
+API Gateway、LambdaによるサーバーレスAPIを構築するプロジェクトのサンプル。  
+APIクライアント(typescript/axios)、APIのレスポンス(typescript)の型はopenapi-generatorを使用して生成する。  
 
 ## 前提
 以下はインストール済みとする。
-- NodeJS 16以上
+- NodeJS 16くらい
+- Java 8くらい (openapi-generatorを実行する際に必要)
 
 ## セットアップ
 必要なライブラリをインストールする。
@@ -26,6 +28,7 @@ $ export ARTIFACT_BUCKET={ARTIFACT_BUCKET}
 $ npm run deploy
 ```
 デプロイが正常終了したらAPI Gateway、Lambda関数などが生成されている。  
+生成されたリソースはマネジメントコンソールのCloudFormationの画面などで確認。
 
 ### 動作確認
 コマンドラインからAPIを実行できる。以下のコマンドを実行して結果が表示されればOK。  
@@ -218,3 +221,5 @@ Error: Request failed with status code 403
     at IncomingMessage.handleStreamEnd (webpack://open-api-gateway-generator/./node_modules/axios/lib/adapters/http.js?:322:11)
 ...省略
 ```
+## 参考
+- https://github.com/OpenAPITools/openapi-generator-cli
