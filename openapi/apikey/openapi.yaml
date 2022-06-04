@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: 'sample api'
+  title: 'api-gateway-sample'
   version: 1.0.0
 paths:
   /user:
@@ -32,7 +32,7 @@ paths:
             statusCode: '200'
         type: aws_proxy
         uri: >-
-          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-generator-api-post-user/invocations
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:api-gateway-sample-api-post-user/invocations
   /user/{id}:
     get:
       description: 'user/get/'
@@ -66,7 +66,7 @@ paths:
             statusCode: '200'
         type: aws_proxy
         uri: >-
-          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-generator-api-get-user/invocations
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:api-gateway-sample-api-get-user/invocations
     delete:
       description: 'user/delete/'
       security:
@@ -95,7 +95,7 @@ paths:
             statusCode: '200'
         type: aws_proxy
         uri: >-
-          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-generator-api-delete-user/invocations
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:api-gateway-sample-api-delete-user/invocations
 components:
   securitySchemes:
     apiKey:

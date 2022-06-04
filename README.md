@@ -211,14 +211,14 @@ $ node dist/client/apikey/delete.js
 以下のようにAPIキーをリクエストヘッダーに付与していないクライアントの場合は403エラーが返ってくる。
 ```bash
 $ node dist/client/get.js 
-webpack://open-api-gateway-generator/./node_modules/axios/lib/core/createError.js?:16
+webpack://api-gateway-sample/./node_modules/axios/lib/core/createError.js?:16
   var error = new Error(message);
               ^
 
 Error: Request failed with status code 403
-    at createError (webpack://open-api-gateway-generator/./node_modules/axios/lib/core/createError.js?:16:15)
-    at settle (webpack://open-api-gateway-generator/./node_modules/axios/lib/core/settle.js?:17:12)
-    at IncomingMessage.handleStreamEnd (webpack://open-api-gateway-generator/./node_modules/axios/lib/adapters/http.js?:322:11)
+    at createError (webpack://api-gateway-sample/./node_modules/axios/lib/core/createError.js?:16:15)
+    at settle (webpack://api-gateway-sample/./node_modules/axios/lib/core/settle.js?:17:12)
+    at IncomingMessage.handleStreamEnd (webpack://api-gateway-sample/./node_modules/axios/lib/adapters/http.js?:322:11)
 ...省略
 ```
 ## 参考

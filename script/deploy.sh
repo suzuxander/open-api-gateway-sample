@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-STACK_NAME=open-api-gateway-generator
+STACK_NAME=api-gateway-sample
 
 if [ "$ARTIFACT_BUCKET" == "" ] ; then
   echo "ARTIFACT_BUCKET is empty."
