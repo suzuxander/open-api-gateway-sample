@@ -30,7 +30,7 @@ paths:
             statusCode: '200'
         type: aws_proxy
         uri: >-
-          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:api-gateway-sample-api-post-user/invocations
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-sample-api-post-user/invocations
   /user/{id}:
     get:
       description: 'user/get/'
@@ -62,7 +62,7 @@ paths:
             statusCode: '200'
         type: aws_proxy
         uri: >-
-          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:api-gateway-sample-api-get-user/invocations
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-sample-api-get-user/invocations
     delete:
       description: 'user/delete/'
       parameters:
@@ -89,7 +89,7 @@ paths:
             statusCode: '200'
         type: aws_proxy
         uri: >-
-          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:api-gateway-sample-api-delete-user/invocations
+          arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-sample-api-delete-user/invocations
 components:
   schemas:
     GetUserResponse:
