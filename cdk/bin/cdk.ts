@@ -44,18 +44,18 @@ const createSimpleApiStack = (): void => {
 
   const app = new cdk.App();
 
-  const stack = new CdkStack(app, 'api-gateway-sample', {
+  const stack = new CdkStack(app, 'open-api-gateway-sample', {
     env: { region }
   });
 
   const api = stack.api('Api', {
-    name: 'api-gateway-sample-api',
+    name: 'open-api-gateway-sample-api',
     stageName: 'dev',
     definitionUri: './' + outputOpenapiName,
   });
 
   const role = stack.serviceRole('LambdaServiceRole', {
-    roleName: 'api-gateway-sample-lambda-service-role',
+    roleName: 'open-api-gateway-sample-lambda-service-role',
     assumeRolePolicy: { service: ['lambda.amazonaws.com'] },
     policy: {
       statement: [{
@@ -91,7 +91,7 @@ const createSimpleApiStack = (): void => {
 
   if (apiType === 'API_KEY_SECURITY') {
     stack.createApiKey('ApiKey', {
-      keyName: 'api-gateway-sample-api-key',
+      keyName: 'open-api-gateway-sample-api-key',
       stageName: 'dev',
       apiId: api.ref
     });

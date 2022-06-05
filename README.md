@@ -1,4 +1,4 @@
-# api-gateway-sample
+# open-api-gateway-sample
 ## 概要
 API Gateway、LambdaによるサーバーレスAPIを構築するプロジェクトのサンプル。  
 APIクライアント(typescript/axios)、APIのレスポンス(typescript)の型はopenapi-generatorを使用して生成する。  
@@ -31,7 +31,7 @@ $ npm run deploy
 
 Waiting for changeset to be created..
 Waiting for stack create/update to complete
-Successfully created/updated stack - api-gateway-sample
+Successfully created/updated stack - open-api-gateway-sample
 ```
 デプロイが正常終了したらAPI Gateway、Lambda関数などが生成されている。  
 生成されたリソースはマネジメントコンソールのCloudFormationの画面などで確認。
@@ -56,9 +56,9 @@ $ node dist/client/delete.js
 [openapi.yaml](/openapi/simple/openapi.yaml)で以下のようなAPIを定義している。
 ```yaml
 openapi: 3.0.0
-
-...省略
-
+info:
+   title: 'api-gateway-sample'
+   version: 1.0.0
 paths:
   /user/{id}:
     get:
