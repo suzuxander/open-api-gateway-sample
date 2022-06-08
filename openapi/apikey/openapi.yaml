@@ -5,7 +5,7 @@ info:
 paths:
   /user:
     post:
-      description: 'user/post/'
+      description: '../lambda/user/post.ts'
       security:
         - apiKey: []
       parameters: []
@@ -35,7 +35,7 @@ paths:
           arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-sample-api-post-user/invocations
   /user/{id}:
     get:
-      description: 'user/get/'
+      description: '../lambda/user/get.ts'
       security:
         - apiKey: []
       parameters:
@@ -68,7 +68,7 @@ paths:
         uri: >-
           arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-sample-api-get-user/invocations
     delete:
-      description: 'user/delete/'
+      description: '../lambda/user/delete.ts'
       security:
         - apiKey: []
       parameters:

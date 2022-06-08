@@ -29,9 +29,19 @@ $ npm run deploy
 
 ..省略
 
-Waiting for changeset to be created..
-Waiting for stack create/update to complete
-Successfully created/updated stack - open-api-gateway-sample
+open-api-gateway-sample: creating CloudFormation changeset...
+
+ ✅  open-api-gateway-sample
+
+✨  Deployment time: 84.5s
+
+Outputs:
+open-api-gateway-sample.ApiEndpoint00000000 = https://xxxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/dev/
+Stack ARN:
+arn:aws:cloudformation:ap-northeast-1:000000000000:stack/open-api-gateway-sample/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+
+✨  Total time: 98.09s
+
 ```
 デプロイが正常終了したらAPI Gateway、Lambda関数などが生成されている。  
 生成されたリソースはマネジメントコンソールのCloudFormationの画面などで確認。
@@ -62,7 +72,7 @@ info:
 paths:
   /user/{id}:
     get:
-      description: 'user/get/'
+      description: '../lambda/user/get.ts'  # handlerのパスを記載
       parameters:
         - in: path
           name: id
@@ -153,48 +163,6 @@ const exec = async () => {
 }
 ```
 
-### APIのエンドポイントを変更/追加する場合
-以下に記載するのは本プロジェクトでの設定なので必要に応じて修正する。
-1. handerファイルを作成  
-   Lambda関数のハンドラーとなるファイルをlambdaディレクトリ配下にファイル名`index.ts`として配置する。
-
-1. openapiを修正  
-   [openapi.yaml](/openapi/simple/openapi.yaml)のdescriptionにhandlerのパスを記載する。
-   ```
-   ...省略
-   
-     /user/{id}:
-       get:
-         description: 'user/get/'　# ここにhandlerのパスを記載
-         parameters:
-           - in: path
-             name: id
-   ```
-
-1. webpack.config.jsを修正  
-   [webpack.config.js](./webpack.config.js)の`entry`の修正する。  
-   エントリーポイントは上記openapi.yamlのdescriptionに追加した値 + `/index`とする。
-   ```yaml
-   ...省略
-   
-   module.exports = {
-     entry: {
-       // for api
-       'user/get/index': './lambda/user/get.ts',
-       'user/post/index': './lambda/user/post.ts',
-       'user/delete/index': './lambda/user/delete.ts',
-       // for api client
-       'client/get': './lambda/client/get.ts',
-       'client/post': './lambda/client/post.ts',
-       'client/delete': './lambda/client/delete.ts',
-       'client/apikey/get': './lambda/client/apikey/get.ts',
-       'client/apikey/post': './lambda/client/apikey/post.ts',
-       'client/apikey/delete': './lambda/client/apikey/delete.ts',
-     },
-   
-   ...省略
-   ```
-
 ## APIキー認証ありのAPIの場合
 ### デプロイ
 デプロイ時に`API_TYPE`に"API_KEY_SECURITY"を代入した上で以下コマンドを実行する。
@@ -238,6 +206,7 @@ Error: Request failed with status code 403
     at createError (webpack://api-gateway-sample/./node_modules/axios/lib/core/createError.js?:16:15)
     at settle (webpack://api-gateway-sample/./node_modules/axios/lib/core/settle.js?:17:12)
     at IncomingMessage.handleStreamEnd (webpack://api-gateway-sample/./node_modules/axios/lib/adapters/http.js?:322:11)
+
 ...省略
 ```
 ## 参考

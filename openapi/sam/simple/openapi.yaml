@@ -5,7 +5,7 @@ info:
 paths:
   /user:
     post:
-      description: '../lambda/user/post.ts'
+      description: 'user/post/'
       parameters: []
       requestBody:
         content:
@@ -33,7 +33,7 @@ paths:
           arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-sample-api-post-user/invocations
   /user/{id}:
     get:
-      description: '../lambda/user/get.ts'
+      description: 'user/get/'
       parameters:
         - in: path
           name: id
@@ -64,7 +64,7 @@ paths:
         uri: >-
           arn:aws:apigateway:{REGION}:lambda:path/2015-03-31/functions/arn:aws:lambda:{REGION}:{ACCOUNT_ID}:function:open-api-gateway-sample-api-get-user/invocations
     delete:
-      description: '../lambda/user/delete.ts'
+      description: 'user/delete/'
       parameters:
         - in: path
           name: id

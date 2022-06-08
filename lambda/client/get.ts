@@ -2,7 +2,7 @@ import { Configuration, DefaultApi } from 'gen/simple';
 
 if (!process.env.BASE_PATH) throw new Error('process.env.BASE_PATH is required.');
 
-const exec = async () => {
+export const exec = async () => {
   const api = new DefaultApi({
     basePath: process.env.BASE_PATH as string
   } as Configuration);

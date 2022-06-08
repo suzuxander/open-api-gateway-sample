@@ -7,8 +7,12 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
+    "presynth": "rm -rf cdk.out",
     "synth": "cdk synth",
     "synth:apikey": "export API_TYPE=API_KEY_SECURITY && cdk synth",
+    "predeploy": "rm -rf cdk.out",
+    "deploy": "cdk deploy",
+    "destory": "cdk destroy open-api-gateway-sample",
     "test": "jest",
     "cdk": "cdk"
   },
@@ -17,6 +21,7 @@
     "@types/node": "10.17.27",
     "@types/prettier": "2.6.0",
     "aws-cdk": "2.25.0",
+    "esbuild": "^0.14.42",
     "jest": "^27.5.1",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.7.0",

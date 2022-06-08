@@ -1,9 +1,12 @@
-import { Stack, StackProps } from 'aws-cdk-lib';
+import { Stack, StackProps, aws_lambda_nodejs, Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { CfnApi, CfnFunction } from 'aws-cdk-lib/aws-sam';
 import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { CfnRole } from 'aws-cdk-lib/aws-iam';
-import { CfnApiKey, CfnUsagePlan, CfnUsagePlanKey } from 'aws-cdk-lib/aws-apigateway';
+import { CfnRole, Role } from 'aws-cdk-lib/aws-iam';
+import { CfnApiKey, CfnUsagePlan, CfnUsagePlanKey, IRestApi, RestApiBase } from 'aws-cdk-lib/aws-apigateway';
+import * as apigateway from 'aws-cdk-lib/aws-apigateway';
+import * as lambdaNodeJs from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 export class CdkStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -24,6 +27,40 @@ export class CdkStack extends Stack {
       definitionUri,
     });
   };
+
+  public apiV2 = (id: string, options: {
+    name: string,
+    stageName?: string,
+    definitionPath: string
+  }): apigateway.SpecRestApi => {
+    const {
+      name, stageName, definitionPath
+    } = options;
+    return new apigateway.SpecRestApi(this, id, {
+      restApiName: name,
+      apiDefinition: apigateway.ApiDefinition.fromAsset(definitionPath),
+      deployOptions: {
+        stageName,
+      },
+      cloudWatchRole: false
+    });
+  };
+
+  public createDeployStage = (id: string, options: {
+    stageName: string,
+    api: apigateway.IRestApi
+  }): apigateway.Stage => {
+    const {
+      stageName, api
+    } = options;
+
+    return new apigateway.Stage(this, id, {
+      stageName,
+      deployment: new apigateway.Deployment(this, 'ApiDeployment', {
+        api,
+      })
+    });
+  }
 
   public lambdaFunction = (id: string, options: {
     codeUri: string,
@@ -74,6 +111,59 @@ export class CdkStack extends Stack {
     })
   };
 
+
+  public lambdaFunctionV2 = (id: string, options: {
+    // codeUri: string,
+    entry: string,
+    handler: string,
+    role: Role,
+    runtime: Runtime,
+    functionName?: string,
+    layers?: string[],
+    timeout?: number,
+    memorySize?: number,
+    event?: { api?: { method: 'GET' | 'POST' | 'PUT' | 'DELETE', path: string, restApiId?: string } }
+  }) => {
+    const {
+      // codeUri,
+      entry,
+      handler,
+      role,
+      functionName,
+      layers,
+      runtime,
+      timeout,
+      memorySize,
+      event
+    } = options;
+
+    // let events: eventSources.ApiEventSource[] = [];
+    // if (event && event.api) {
+    //   events = [
+    //     new eventSources.ApiEventSource(
+    //       event.api.method,
+    //       event.api.path,
+    //
+    //     )
+    //   ];
+    // }
+
+    return new lambdaNodeJs.NodejsFunction(this, id, {
+      functionName,
+      // entry: '../dist/user/get/index.js',
+      entry,
+      handler,
+      runtime,
+      role,
+      timeout: timeout ? Duration.minutes(timeout) : undefined,
+      memorySize,
+      // events,
+      bundling: {
+        tsconfig: '../tsconfig.json'
+      }
+    });
+  };
+
   public serviceRole = (id: string, options: {
     roleName: string,
     assumeRolePolicy: { service: string[] },
@@ -118,6 +208,27 @@ export class CdkStack extends Stack {
     });
   };
 
+  public lambdaServiceRole = (id: string, options: {
+    roleName?: string
+  }): iam.Role => {
+    const { roleName } = options;
+
+    return new iam.Role(this, id, {
+      // roleName: 'open-api-gateway-sample-lambda-service-role',
+      roleName,
+      assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com', ),
+      inlinePolicies: {
+        'policy': new iam.PolicyDocument({
+          statements: [new iam.PolicyStatement({
+            actions: [ 'logs:*' ],
+            effect: iam.Effect.ALLOW,
+            resources: [ '*' ]
+          })]
+        })
+      }
+    });
+  };
+
   public createApiKey = (id: string, options: {
     stageName: string,
     apiId: string,
@@ -156,4 +267,24 @@ export class CdkStack extends Stack {
 
     return apiKey;
   };
+
+  public createApiKeyV2 = (id: string, options: {
+    keyName: string,
+    api: apigateway.RestApiBase,
+    stage: apigateway.Stage
+  }): void => {
+    const { keyName, api, stage } = options;
+    const apiKey = api.addApiKey(id, {
+      // apiKeyName: 'open-api-gateway-sample-api-key',
+      apiKeyName: keyName
+    });
+
+    api.addUsagePlan('ApiKeyUsagePlan', {
+      name: keyName + '-usage-plan',
+      apiStages: [{
+        api: api,
+        stage,
+      }]
+    }).addApiKey(apiKey);
+  }
 }
